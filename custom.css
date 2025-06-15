@@ -1,0 +1,125 @@
+/* custom.css */
+
+/* Importar fontes do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&display=swap');
+
+:root {
+  --main-color: #2c3e50; /* Azul Escuro / Cinza Chumbo (cor principal) */
+  --secondary-color: #ecf0f1; /* Cinza Claro / Branco Sujo (fundo principal) */
+  --text-color: #34495e; /* Cinza Escuro (texto normal) */
+  --heading-color: #2c3e50; /* A mesma da main-color para títulos */
+  --accent-color: #e67e22; /* Laranja (para destaque/link, algo vivo) */
+  --link-color: #3498db; /* Azul vibrante para links */
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: var(--text-color);
+  font-size: 1.0em; /* Fonte geral reduzida para caber mais */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--heading-color);
+}
+
+.remark-slide-content {
+  background-color: var(--secondary-color);
+  padding: 20px 80px 20px 80px;
+  font-size: 1.0em; /* Garante tamanho de fonte consistente */
+}
+
+.remark-slide-content h1 {
+  font-size: 2.2em; /* Títulos reduzidos */
+  border-bottom: 2px solid var(--main-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  color: var(--main-color);
+}
+
+.remark-slide-content h2 {
+  font-size: 1.8em; /* Títulos reduzidos */
+  color: var(--heading-color);
+}
+
+.remark-slide-content h3 {
+  font-size: 1.3em; /* Títulos reduzidos */
+  color: var(--heading-color);
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.remark-inline-code {
+  background: #e0e0e0;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-family: 'Fira Code', monospace;
+}
+
+.remark-code {
+  background: #f8f8f8;
+  border-left: 5px solid var(--main-color);
+  padding: 10px;
+  border-radius: 5px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8em; /* Código reduzido */
+}
+
+.inverse {
+  background-color: var(--main-color);
+  color: var(--secondary-color);
+  text-shadow: none;
+}
+.inverse h1, .inverse h2, .inverse h3, .inverse h4 {
+  color: var(--secondary-color);
+}
+
+.large { font-size: 1.0em; } /* Ajustado */
+.extra-large { font-size: 1.2em; } /* Ajustado */
+
+/* Customização ESPECÍFICA para a capa elegante */
+.title-slide {
+  background-color: var(--main-color); /* Fundo da capa com a cor principal (sem imagem) */
+  color: var(--secondary-color);
+  text-align: center;
+  padding: 0;
+  /* Removendo propriedades de background-image aqui, se estiverem presentes */
+  background-image: none;
+}
+.title-slide h1 {
+  font-size: 3.0em;
+  color: var(--secondary-color);
+  margin-top: 50px; /* Ajustada para dar espaço ao logo */
+  border-bottom: none;
+}
+.title-slide h2 {
+  font-size: 1.5em;
+  color: var(--accent-color);
+}
+.title-slide h3 {
+  font-size: 1.1em;
+  margin-top: 40px;
+  color: var(--secondary-color);
+}
+.title-slide h4 {
+  font-size: 0.8em;
+  margin-top: 5px;
+  color: var(--secondary-color);
+  opacity: 0.8;
+}
+.title-slide img.logo-pge { /* Classe específica para o logo na capa */
+  margin-top: 30px; /* Espaço do topo para o logo */
+  max-width: 70%; /* Logo maior na capa */
+  height: auto; /* Mantém a proporção */
+  background-color: transparent; /* Fundo transparente para o logo */
+  padding: 0; /* Remove padding extra */
+  border-radius: 0; /* Remove borda arredondada */
+  box-shadow: none; /* Remove sombra extra */
+}

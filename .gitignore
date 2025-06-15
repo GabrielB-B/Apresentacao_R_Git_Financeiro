@@ -1,0 +1,9 @@
+.Rproj.user/
+.Rhistory
+.Rdata
+.DS_Store
+# Arquivos gerados pelo R Markdown que podem ser recriados
+*.html
+*.md
+# Pasta libs/ (gerada pelo xaringan, não precisa ir para o Git)
+libs/

@@ -1,0 +1,578 @@
+---
+title: "Análise de Dados e Transparência no Setor Financeiro Público"
+subtitle: "O Poder do R, R Markdown e Git/GitHub na Procuradoria-Geral do Estado de Sergipe"
+author: "Gabriel Bomfim Bispo"
+institute: "Setor Financeiro - PGE/SE"
+date: "14 de Junho de 2025"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["default", "default-fonts", "custom.css"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false
+    self_contained: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width = 9, fig.height = 6, fig.retina = 3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = FALSE, # Não mostra o código R nos slides finais, só os resultados
+  message = FALSE,
+  warning = FALSE,
+  hiline = TRUE
+)
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(here)
+```
+<style type="text/css">
+  /* Estilos customizados para o visual institucional - Tema Preto e Cinza */
+  :root {
+    --main-color: #2c3e50; /* Azul Escuro / Cinza Chumbo (cor principal) */
+    --secondary-color: #ecf0f1; /* Cinza Claro / Branco Sujo (fundo principal) */
+    --text-color: #34495e; /* Cinza Escuro (texto normal) */
+    --heading-color: #2c3e50; /* A mesma da main-color para títulos */
+    --accent-color: #e67e22; /* Laranja (para destaque/link, algo vivo) */
+    --link-color: #3498db; /* Azul vibrante para links */
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    color: var(--text-color);
+    font-size: 1.0em; /* Fonte geral reduzida para caber mais */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--heading-color);
+  }
+  .remark-slide-content {
+    background-color: var(--secondary-color);
+    padding: 20px 80px 20px 80px;
+    font-size: 1.0em; /* Garante tamanho de fonte consistente */
+  }
+  .remark-slide-content h1 {
+    font-size: 2.2em; /* Títulos reduzidos */
+    border-bottom: 2px solid var(--main-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: var(--main-color);
+  }
+  .remark-slide-content h2 {
+    font-size: 1.8em; /* Títulos reduzidos */
+    color: var(--heading-color);
+  }
+  .remark-slide-content h3 {
+    font-size: 1.3em; /* Títulos reduzidos */
+    color: var(--heading-color);
+  }
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .remark-inline-code {
+    background: #e0e0e0;
+    border-radius: 3px;
+    padding: 2px 4px;
+    font-family: 'Fira Code', monospace;
+  }
+  .remark-code {
+    background: #f8f8f8;
+    border-left: 5px solid var(--main-color);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8em; /* Código reduzido */
+  }
+  .inverse {
+    background-color: var(--main-color);
+    color: var(--secondary-color);
+    text-shadow: none;
+  }
+  .inverse h1, .inverse h2, .inverse h3, .inverse h4 {
+    color: var(--secondary-color);
+  }
+
+  .large { font-size: 1.0em; } /* Ajustado */
+  .extra-large { font-size: 1.2em; } /* Ajustado */
+
+  /* Customização ESPECÍFICA para a capa elegante */
+  .title-slide {
+    background-color: var(--main-color); /* Fundo da cor principal */
+    color: var(--secondary-color);
+    text-align: center;
+    padding: 0;
+  }
+  .title-slide h1 {
+    font-size: 3.0em;
+    color: var(--secondary-color);
+    margin-top: 80px;
+    border-bottom: none;
+  }
+  .title-slide h2 {
+    font-size: 1.5em;
+    color: var(--accent-color);
+  }
+  .title-slide h3 {
+    font-size: 1.1em;
+    margin-top: 40px;
+    color: var(--secondary-color);
+  }
+  .title-slide h4 {
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: var(--secondary-color);
+    opacity: 0.8;
+  }
+  .title-slide img {
+    margin-top: 60px;
+    max-width: 180px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+---
+class: title-slide, center, middle
+
+<img class="logo-pge" src="logo.png" alt="Logo PGE SE">
+
+# `r rmarkdown::metadata$title`
+
+## `r rmarkdown::metadata$subtitle`
+
+### `r rmarkdown::metadata$author`
+#### `r rmarkdown::metadata$institute`
+---
+# Sumário
+
+<style>
+/* Ajustes para o estilo do sumário */
+.remark-slide-content ul { /* Para as listas no sumário */
+  list-style: none; /* Remove os marcadores de lista padrão */
+  padding-left: 0;
+}
+.remark-slide-content li { /* Ajusta o espaçamento dos itens */
+  margin-bottom: 8px; /* Espaçamento menor */
+}
+.remark-slide-content li a { /* Estilo dos links no sumário */
+  font-size: 1.0em; /* Fonte um pouco menor para caber */
+  color: var(--text-color); /* Cor do link (texto normal) */
+  font-weight: bold; /* Links em negrito */
+}
+.remark-slide-content li li a { /* Para subitens no sumário */
+  font-size: 0.9em; /* Fonte ainda menor */
+  font-weight: normal; /* Subitens não ficam em negrito */
+  padding-left: 15px; /* Recuo para subitens */
+  display: block;
+}
+.remark-slide-content li a:hover {
+  color: var(--accent-color); /* Cor de destaque ao passar o mouse */
+  text-decoration: underline;
+}
+</style>
+
+<br>
+<ul>
+  <li><a href="#1-o-que-e-r-e-por-que-ele-e-util">1. O que é R e Por Que Ele é Útil?</a></li>
+  <li><a href="#2-r-markdown-sua-ferramenta-de-relatorios-dinamicos">2. R Markdown: Sua Ferramenta de Relatórios Dinâmicos</a></li>
+  <li><a href="#3-exemplo-pratico-relatorio-de-despesas-ficticias">3. Exemplo Prático: Relatório de Despesas Fictícias</a>
+    <ul>
+      <li><a href="#3-1-tabela-resumo-das-despesas">3.1 Tabela Resumo das Despesas</a></li>
+      <li><a href="#3-2-grafico-de-pizza-distribuicao-das-despesas-por-categoria">3.2 Gráfico de Pizza: Distribuição de Despesas</a></li>
+      <li><a href="#3-3-grafico-de-colunas-despesas-totais-por-mes">3.3 Gráfico de Colunas: Despesas Mensais</a></li>
+      <li><a href="#3-4-grafico-de-linhas-despesas-totais-ao-longo-do-ano">3.4 Gráfico de Linhas: Despesas Totais</a></li>
+    </ul>
+  </li>
+  <li><a href="#4-o-que-e-git-github-e-por-que-o-versionamento-e-essencial">4. O que é Git, GitHub e Por Que o Versionamento é Essencial?</a></li>
+  <li><a href="#5-como-o-r-r-markdown-e-git-github-trabalham-juntos">5. Como o R, R Markdown e Git/GitHub Trabalham Juntos?</a></li>
+  <li><a href="#6-passo-a-passo-completo-do-codigo-ao-github">6. Passo a Passo Completo: Do Código ao GitHub</a></li>
+</ul>
+---
+## 1. O que é R e Por Que Ele é Útil?
+
+### Imagine uma ferramenta superpoderosa para lidar com números!
+
+* **R é uma Linguagem de Programação:** Não se assuste com o nome! É como um idioma que usamos para conversar com o computador e pedir que ele faça análises de dados.
+* **Foco em Dados:** O R foi criado por estatísticos e é excelente para:
+    * **Organizar** grandes volumes de informações.
+    * **Analisar** padrões e tendências.
+    * **Visualizar** dados através de gráficos bonitos e informativos.
+    * **Automatizar** tarefas repetitivas, como a geração de relatórios mensais.
+
+### Por que no Setor Financeiro de um Órgão Público?
+
+* **Análise de Despesas e Receitas:** Entender para onde o dinheiro está indo e de onde está vindo.
+* **Detecção de Anomalias:** Identificar gastos inesperados ou padrões incomuns que precisam de atenção.
+* **Previsão e Planejamento:** Projetar cenários futuros com base em dados históricos.
+* **Geração de Relatórios Detalhados:** Criar documentos claros e compreensíveis para auditorias, prestação de contas e tomada de decisões.
+* **Transparência:** Ajudar a apresentar os dados de forma que todos possam entender, promovendo a clareza nas contas públicas.
+---
+## 2. R Markdown: Sua Ferramenta de Relatórios Dinâmicos
+
+### Chega de Copiar e Colar!
+
+* **O que é?** O R Markdown é um superpoder para criar documentos. Ele combina:
+    * **Texto normal:** Onde você escreve as explicações e análises.
+    * **Código R:** Onde você coloca suas análises e gráficos (e eles são executados!).
+    * **Formato de Saída:** Transforma tudo em relatórios HTML, PDF, documentos Word, ou até apresentações como esta!
+
+* **Por que é Poderoso?**
+    * **Reprodutibilidade:** Seus relatórios não são mais um "print" estático. O código está ali! Qualquer pessoa pode rodar e verificar os resultados.
+    * **Automação:** Gerou um novo mês de dados? Basta rodar o R Markdown novamente e seu relatório é atualizado automaticamente, com novos gráficos e números.
+    * **Consistência:** Mantenha um padrão visual e de conteúdo em todos os seus relatórios.
+    * **Eficiência:** Esqueça o trabalho manual de copiar gráficos e tabelas. O R Markdown faz isso por você.
+
+### No Setor Financeiro Público, significa:
+
+* **Relatórios Mensais de Despesas:** Gerados com um clique, sempre atualizados.
+* **Prestação de Contas:** Documentos claros e auditáveis.
+* **Análises de Impacto:** Mostrar os resultados de políticas financeiras de forma visual.
+* **Agilidade:** Mais tempo para analisar e menos tempo para formatar.
+---
+## 3. Exemplo Prático: Relatório de Despesas Fictícias
+
+Vamos ver o R em ação! Aqui, simularemos um relatório financeiro simples.
+
+### Cenário: Despesas Mensais do Órgão Público (PGE/SE - Fictício)
+
+Imagine que precisamos monitorar as despesas. Para um cenário mais realista (ainda que fictício), vamos simular variações sazonais e tendências.
+```{r dados-financeiros, echo=FALSE, message=FALSE, warning=FALSE}
+# Para garantir que o exemplo seja reprodutível, vamos criar os dados aqui.
+# Na vida real, você leria esses dados de um arquivo CSV, Excel, ou banco de dados.
+
+set.seed(123) # Para resultados reprodutíveis
+
+meses <- factor(
+  c("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"),
+  levels = c("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez")
+)
+
+categorias <- c("Energia", "Água", "Combustível", "Suprimentos", "Manutenção", "Outras Despesas")
+
+# Criando dados base
+dados_base <- expand.grid(Mes = meses, Categoria = categorias) %>%
+  mutate(Valor_Base = round(runif(n(), min = 8000, max = 45000), 2))
+
+# Ajustes para simular padrões mais "reais" (fictícios)
+dados_despesas <- dados_base %>%
+  mutate(
+    Valor = case_when(
+      # Gastos de energia mais altos no verão (Jan-Mar, Out-Dez)
+      Categoria == "Energia" & Mes %in% c("Jan", "Fev", "Dez") ~ Valor_Base * 1.3,
+      # Gastos de água mais altos no verão
+      Categoria == "Água" & Mes %in% c("Jan", "Fev", "Mar", "Nov", "Dez") ~ Valor_Base * 1.2,
+      # Combustível com tendência de alta no meio do ano, baixa no início
+      Categoria == "Combustível" & Mes %in% c("Jun", "Jul", "Ago") ~ Valor_Base * 1.4,
+      Categoria == "Combustível" & Mes %in% c("Jan", "Fev", "Mar") ~ Valor_Base * 0.7,
+      # Manutenção com picos anuais
+      Categoria == "Manutenção" & Mes %in% c("Abr", "Set") ~ Valor_Base * 1.5,
+      # Outras despesas com flutuação menor
+      TRUE ~ Valor_Base
+    ),
+    Valor = round(Valor, 2) # Arredonda para 2 casas decimais
+  ) %>%
+  # Adiciona uma pequena variação aleatória para cada item
+  mutate(
+    Valor = Valor + runif(n(), min = -2000, max = 2000),
+    Valor = pmax(0, round(Valor, 2)) # Garante que os valores não sejam negativos
+  ) %>%
+  select(-Valor_Base) # Remove a coluna base
+
+# Tabela Resumo das Despesas Totais por Categoria
+despesas_por_categoria <- dados_despesas %>%
+  group_by(Categoria) %>%
+  summarise(Total = sum(Valor)) %>%
+  mutate(Percentual = Total / sum(Total) * 100) %>%
+  arrange(desc(Total))
+
+# Tabela Resumo das Despesas Totais por Mês
+despesas_por_mes <- dados_despesas %>%
+  group_by(Mes) %>%
+  summarise(Total = sum(Valor)) %>%
+  ungroup()
+
+# Kable para formatar a tabela de Despesas por Categoria para exibição
+tabela_despesas_categoria <- kable(despesas_por_categoria,
+                                   caption = "Despesas Totais por Categoria (Valores Fictícios)",
+                                   col.names = c("Categoria", "Total (R$)", "Percentual (%)"),
+                                   digits = 2, format = "html") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = FALSE)
+
+# Kable para formatar a tabela de Despesas por Mês para exibição
+tabela_despesas_mes <- kable(despesas_por_mes,
+                             caption = "Despesas Totais Mensais (Valores Fictícios)",
+                             col.names = c("Mês", "Total (R$)"),
+                             digits = 2, format = "html") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = FALSE)
+```
+### 3.1. Tabela Resumo das Despesas
+
+Aqui estão as despesas totais por categoria em um ano fictício:
+```{r tabela-despesas-categoria, echo=FALSE}
+tabela_despesas_categoria
+```
+---
+### 3.2. Gráfico de Pizza: Distribuição das Despesas por Categoria
+```{r grafico-pizza, echo=FALSE, fig.align='center', out.width='70%'}
+ggplot(despesas_por_categoria, aes(x = "", y = Percentual, fill = Categoria)) +
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start = 0) +
+  labs(
+    title = "Distribuição Percentual das Despesas por Categoria",
+    fill = "Tipo de Despesa",
+    caption = "Dados Fictícios"
+  ) +
+  theme_void() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#2c3e50"), # Ajustado para cor do tema
+    legend.position = "right",
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.text = element_text(size = 11),
+    plot.caption = element_text(hjust = 1, size = 10, color = "gray50")
+  ) +
+  geom_text(aes(label = paste0(round(Percentual, 1), "%")),
+            position = position_stack(vjust = 0.5),
+            color = "white", fontface = "bold", size = 4) # Rótulos de porcentagem
+```
+---
+### 3.3. Gráfico de Colunas: Despesas Totais por Mês
+```{r grafico-colunas, echo=FALSE, fig.align='center', out.width='90%'}
+ggplot(despesas_por_mes, aes(x = Mes, y = Total, fill = Mes)) +
+  geom_col(show.legend = FALSE) +
+  labs(
+    title = "Despesas Totais Mensais",
+    x = "Mês",
+    y = "Valor (R$)",
+    caption = "Dados Fictícios"
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "R$ ", big.mark = ".", decimal.mark = ",")) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "bold", color = "#2c3e50"), # Ajustado para cor do tema
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    axis.title = element_text(size = 12, face = "bold"),
+    plot.caption = element_text(hjust = 1, size = 10, color = "gray50"),
+    panel.grid.major.x = element_blank()
+  )
+```
+---
+### 3.4. Gráfico de Linhas: Despesas por Categoria ao Longo do Ano
+
+Este gráfico mostra a evolução das despesas por categoria, permitindo identificar tendências sazonais e picos.
+```{r grafico-linhas, echo=FALSE, fig.align='center', out.width='90%', fig.height=5.5}
+ggplot(dados_despesas, aes(x = Mes, y = Valor, color = Categoria, group = Categoria)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3, shape = 21, fill = "white", stroke = 1.5) +
+  labs(
+    title = "Evolução das Despesas por Categoria ao Longo do Ano",
+    x = "Mês",
+    y = "Valor (R$)",
+    color = "Tipo de Despesa",
+    caption = "Dados Fictícios - Simulação PGE/SE Financeiro"
+  ) +
+  theme_minimal(base_size = 14) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "R$ ", big.mark = ".", decimal.mark = ",")) +
+  scale_color_brewer(palette = "Set1") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 20, face = "bold", color = "#2c3e50"),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 12),
+    axis.title = element_text(size = 14, face = "bold"),
+    legend.position = "right",
+    legend.title = element_text(size = 14, face = "bold"),
+    legend.text = element_text(size = 12),
+    plot.caption = element_text(hjust = 1, size = 10, color = "gray50", face = "italic"),
+    panel.grid.minor = element_blank()
+  )
+```
+---
+## 4. O que é Git, GitHub e Por Que o Versionamento é Essencial?
+
+### Pense no Git como uma Máquina do Tempo para seus Arquivos!
+
+* **Git:** É um sistema de controle de versão. Ele registra todas as mudanças que você faz em seus arquivos ao longo do tempo.
+    * **Histórico Completo:** Você sabe *quem* fez *o quê*, *quando* e *por quê*.
+    * **Voltar no Tempo:** Cometeu um erro? Não se preocupe! Você pode "desfazer" e voltar para uma versão anterior do seu projeto.
+    * **Trabalho em Equipe:** Várias pessoas podem trabalhar no mesmo projeto ao mesmo tempo sem se atrapalhar.
+
+* **GitHub:** É uma plataforma online que hospeda repositórios Git.
+    * **Armazenamento em Nuvem:** Seus projetos ficam seguros na internet, acessíveis de qualquer lugar.
+    * **Colaboração Simplificada:** Compartilhe seu trabalho, receba sugestões e integre contribuições de colegas.
+    * **Portfólio:** Mostre seus projetos e habilidades.
+
+### Por que é Essencial em Órgãos Públicos (e no Setor Financeiro)?
+
+* **Transparência e Auditoria:**
+    * Cada alteração em um relatório ou análise financeira é registrada.
+    * Facilita a auditoria interna e externa, comprovando a integridade dos dados e análises.
+    * Aumenta a confiança pública nas informações divulgadas.
+
+* **Controle de Versão dos Relatórios:**
+    * Chega de arquivos como `relatorio_final.pdf`, `relatorio_final_v2.pdf`, `relatorio_final_final_corrigido.pdf`!
+    * O Git gerencia isso de forma organizada, garantindo que você esteja sempre trabalhando na versão mais atualizada e oficial.
+
+* **Colaboração Segura:**
+    * Equipes financeiras podem trabalhar em conjunto em um mesmo projeto de análise, sem risco de sobrescrever o trabalho alheio.
+    * Melhora a comunicação e a eficiência do time.
+
+* **Recuperação de Desastres:**
+    * Perdeu seu computador? Seus projetos estão seguros no GitHub.
+    * Garanta a continuidade do trabalho mesmo diante de imprevistos.
+
+* **Histórico de Decisões:**
+    * O histórico do Git pode documentar o "porquê" de certas decisões ou ajustes em análises financeiras, sendo valioso para futuras referências.
+---
+## 5. Como o R, R Markdown e Git/GitHub Trabalham Juntos?
+
+### O Fluxo de Trabalho Ideal no Setor Financeiro
+
+1.  **Desenvolvimento da Análise (R):**
+    * Você escreve seu código R para carregar dados, fazer cálculos e criar gráficos.
+
+2.  **Criação do Relatório (R Markdown):**
+    * Você insere seu código R dentro de um documento R Markdown, adicionando textos explicativos.
+    * Gera relatórios financeiros dinâmicos e profissionais (HTML, PDF, etc.).
+
+3.  **Versionamento do Projeto (Git):**
+    * Cada vez que você faz uma alteração importante no seu código ou relatório, você "salva" essa versão com o Git.
+    * Isso cria um histórico detalhado das mudanças.
+
+4.  **Compartilhamento e Colaboração (GitHub):**
+    * Você "empurra" (push) suas versões para o GitHub, tornando-as acessíveis para sua equipe.
+    * Colegas podem "puxar" (pull) as últimas versões, fazer suas contribuições e propor mudanças.
+
+### Benefícios no Órgão Público:
+
+* **Relatórios Financeiros Auditáveis:** Cada número e gráfico pode ser rastreado até o código que o gerou.
+* **Transparência Aumentada:** O processo é aberto e verificável, aumentando a confiança.
+* **Melhoria Contínua:** Facilita a revisão e aprimoramento das análises e relatórios.
+* **Capacitação da Equipe:** Promove o aprendizado e a colaboração entre os membros da equipe.
+---
+## 6. Passo a Passo Completo: Do Código ao GitHub
+
+Agora, vamos colocar a mão na massa e ver como tudo isso funciona!
+
+#### **6.1. Salvar o Arquivo da Apresentação**
+
+* Você já salvou o arquivo como `apresentacao.Rmd` no seu projeto RStudio.
+
+#### **6.2. Criar o Arquivo CSS Personalizado (`custom.css`)**
+
+Para a apresentação ter um visual institucional, precisamos de um arquivo `custom.css`.
+1.  Dentro do RStudio, vá em `File` -> `New File` -> `Text File`.
+2.  Cole o conteúdo do `custom.css` que forneci abaixo (com o tema preto e cinza).
+3.  Salve este arquivo como `custom.css` dentro da *mesma pasta* do seu projeto.
+
+#### **6.3. Transformar em Slides (HTML)**
+
+Com o arquivo `apresentacao.Rmd` aberto no RStudio:
+
+* Clique no botão `Knit` na barra de ferramentas (parece um novelo de lã com uma agulha).
+* Selecione `Knit to HTML (xaringan)`.
+
+O RStudio irá processar o R Markdown, executar todos os códigos R, gerar os gráficos e tabelas, e criar um arquivo HTML chamado `apresentacao.html` na sua pasta do projeto. Este arquivo será aberto automaticamente no seu navegador.
+
+#### **6.4. Abrir a Apresentação Offline**
+
+No dia da apresentação, para abrir a apresentação sem precisar de internet ou do RStudio:
+
+1.  Vá até a pasta do seu projeto (`Apresentacao_R_Git_Financeiro`).
+2.  Localize o arquivo `apresentacao.html`.
+3.  Dê um **duplo clique** nele. Ele será aberto no seu navegador padrão (Chrome, Firefox, Edge, etc.) e funcionará perfeitamente offline.
+    * **Navegação:** Use as setas do teclado (direita/esquerda) para avançar/voltar nos slides.
+    * **Modo Apresentador:** Pressione `P` para abrir o modo apresentador, que mostra o slide atual, o próximo slide e suas notas (se houver).
+
+#### **6.5. Preparando para o Git/GitHub**
+
+Vamos inicializar seu projeto com Git e depois enviar para o GitHub.
+
+##### **6.5.1. Inicializar o Repositório Git**
+
+1.  No RStudio, na aba `Git` (geralmente no painel superior direito, ao lado de Environment, History), você deve ver uma mensagem como "No Git repository for this project".
+2.  Clique em `Create Git Repository...`.
+3.  Confirme a pasta do seu projeto. O RStudio irá inicializar o Git para você.
+    * Se a aba Git não aparecer, vá em `Tools` -> `Project Options` -> `Git/SVN` e marque "Version control system: Git".
+
+##### **6.5.2. Primeiro Commit (Salvando sua primeira versão no Git)**
+
+Após inicializar o Git, a aba Git do RStudio mostrará os arquivos do seu projeto.
+
+1.  Marque a caixa `Staged` ao lado de `apresentacao.Rmd`, `custom.css` e o arquivo `.Rproj` (ex: `Apresentacao_R_Git_Financeiro.Rproj`). Isso "prepara" os arquivos para serem salvos.
+2.  Clique em `Commit`.
+3.  Abrirá uma nova janela "Commit Git". No campo "Commit message", digite uma mensagem clara, como: `Primeiro commit: Estrutura inicial da apresentação e CSS`.
+4.  Clique em `Commit`. Feche a janela de commit.
+
+Você acaba de salvar a primeira versão do seu projeto no histórico do Git!
+
+##### **6.5.3. Criar um Repositório no GitHub**
+
+1.  Vá para o GitHub no seu navegador (`https://github.com/`).
+2.  Faça login.
+3.  No canto superior direito, clique no sinal de `+` e selecione `New repository`.
+4.  Em "Repository name", digite `Apresentacao_R_Git_Financeiro` (é uma boa prática usar o mesmo nome do seu projeto local).
+5.  Você pode adicionar uma descrição opcional.
+6.  **Importante:** Selecione `Public` ou `Private` conforme a necessidade do órgão. Para fins de demonstração, `Public` é ok. Se for um projeto sensível, escolha `Private`.
+7.  **Não** marque "Add a README file" ou "Add .gitignore" ou "Choose a license". Faremos isso pelo RStudio.
+8.  Clique em `Create repository`.
+
+O GitHub irá te mostrar uma página com instruções. Procure pela seção "...or push an existing repository from the command line" e copie a URL que termina em `.git` (ex: `https://github.com/SeuUsuario/Apresentacao_R_Git_Financeiro.git`).
+
+##### **6.5.4. Conectar o Projeto Local ao GitHub (Push)**
+
+De volta ao RStudio:
+
+1.  No console, você precisa configurar o "controle remoto" para apontar para o seu repositório GitHub. Cole o seguinte comando, **substituindo a URL pela que você copiou do GitHub**:
+
+    ```bash
+    git remote add origin SUA_URL_DO_GITHUB
+    ```
+
+    Pressione Enter.
+
+2.  Agora, para enviar (push) seus arquivos para o GitHub:
+
+    ```bash
+    git push -u origin master
+    ```
+
+    * `origin` é o nome que demos ao seu repositório no GitHub.
+    * `master` (ou `main`, dependendo da configuração do GitHub) é o nome do seu ramo principal.
+
+    Pressione Enter. Uma janela de autenticação pode aparecer. Use seu nome de usuário e Personal Access Token (PAT) do GitHub, ou o navegador para autenticação.
+
+    * **Importante:** Se você usa autenticação por token, precisará gerar um PAT no GitHub (`Settings` -> `Developer settings` -> `Personal access tokens` -> `Tokens (classic)` -> `Generate new token`). Copie-o e use como sua senha quando solicitado pelo RStudio/Git.
+
+Após o push, vá para o GitHub e atualize a página do seu repositório. Você verá seus arquivos lá!
+
+#### **6.6. Como Baixar (Clonar) o Projeto no Dia da Apresentação (ou em outro computador)**
+
+Imagine que você está em outro computador. Você não precisa reinstalar tudo, mas precisa baixar o projeto.
+
+1.  No GitHub, na página do seu repositório `Apresentacao_R_Git_Financeiro`, clique no botão verde `Code`.
+2.  Selecione a opção `HTTPS` e copie a URL.
+3.  No RStudio (em um novo computador ou após fechar seu projeto):
+    * Vá em `File` -> `New Project...`.
+    * Selecione `Version Control`.
+    * Selecione `Git`.
+    * Em "Repository URL:", cole a URL que você copiou do GitHub.
+    * Em "Project directory name:", o RStudio irá preencher automaticamente `Apresentacao_R_Git_Financeiro`.
+    * Escolha onde você quer que a pasta seja criada em "Create project as a subdirectory of:".
+    * Clique em `Create Project`.
+
+O RStudio fará o download de todos os arquivos do seu repositório GitHub para o seu computador. Agora você tem o projeto pronto para abrir o `apresentacao.html` ou fazer edições.
+---
