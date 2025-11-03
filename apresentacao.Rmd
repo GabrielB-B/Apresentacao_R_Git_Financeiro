@@ -435,7 +435,7 @@ ggplot(dados_despesas, aes(x = Mes, y = Valor, color = Categoria, group = Catego
     * Garanta a continuidade do trabalho mesmo diante de imprevistos.
 
 * **Histórico de Decisões:**
-    * O histórico do Git pode documentar o "porquê" de certas decisões ou ajustes em análises financeiras, sendo valioso para futuras referências.
+    * O histórico do Git pode documentar o "porquê" de certas decisões ou ajustes em análises ,  alteração sendo valioso para futuras referências.
 ---
 ## 5. Como o R, R Markdown e Git/GitHub Trabalham Juntos?
 
