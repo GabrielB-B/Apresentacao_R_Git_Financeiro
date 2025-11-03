@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.width = 9, fig.height = 6, fig.retina = 3,
   out.width = "100%",
   cache = FALSE,
-  echo = FALSE, # Não mostra o código R nos slides finais, só os resultados
+  echo = FALSE, # Não mostra o códigooo R nos slides finais, só os resultados
   message = FALSE,
   warning = FALSE,
   hiline = TRUE
@@ -405,7 +405,7 @@ ggplot(dados_despesas, aes(x = Mes, y = Valor, color = Categoria, group = Catego
 
 ### Pense no Git como uma Máquina do Tempo para seus Arquivos!
 
-* **Git:** É um sistema de controle de versão. Ele registra todas as mudanças que você faz em seus arquivos ao longo do tempo.
+* **Git:** É um sistema de controle de. Ele registra todas as mudanças que você faz em seus arquivos ao longo do tempo.
     * **Histórico Completo:** Você sabe *quem* fez *o quê*, *quando* e *por quê*.
     * **Voltar no Tempo:** Cometeu um erro? Não se preocupe! Você pode "desfazer" e voltar para uma versão anterior do seu projeto.
     * **Trabalho em Equipe:** Várias pessoas podem trabalhar no mesmo projeto ao mesmo tempo sem se atrapalhar.
@@ -427,7 +427,7 @@ ggplot(dados_despesas, aes(x = Mes, y = Valor, color = Categoria, group = Catego
     * O Git gerencia isso de forma organizada, garantindo que você esteja sempre trabalhando na versão mais atualizada e oficial.
 
 * **Colaboração Segura:**
-    * Equipes financeiras podem trabalhar em conjunto em um mesmo projeto de análise, sem risco de sobrescrever o trabalho alheio.
+    * Equipes financeiras podem trabalhar em conjunto em um mesmo projeto de análise, com risco de sobrescrever o trabalho alheio.
     * Melhora a comunicação e a eficiência do time.
 
 * **Recuperação de Desastres:**
